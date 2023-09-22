@@ -18,6 +18,20 @@ public:
 	//Деструктор
 	~Polynomial() {};
 
+	//Ввод многочлена с клавиатуры
+	void input() {
+		int degree;
+		cout << "Введите степень многочлена: ";
+		cin >> degree;
+
+		coefficients.resize(degree + 1);
+
+		for (int i = degree; i >= 0; i--) {
+			cout << "Введите коэффициент при x^" << i << ": ";
+			cin >> coefficients[i];
+		}
+	};
+
 	//Перегрузка оператора сложения
 	Polynomial operator+ (const Polynomial& other) const {
 		vector<double> result(max(coefficients.size(), other.coefficients.size()), 0);
