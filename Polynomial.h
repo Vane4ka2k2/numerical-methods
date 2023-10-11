@@ -172,23 +172,40 @@ public:
         return Polynomial(resultCoeffs);
     }
 
-    //получение производной
-    Polynomial derivative() {
-        vector<double> result(coefficients.size(), 0.0);
-        double tempDegree = degree;
-
-        for (int i = 0; i <= tempDegree; i++)
-        {
-            if (i <= tempDegree - 1)
-            {
-                result[i] = (i + 1) * coefficients[i + 1];
+    //остаток от деления
+    Polynomial operator% (const Polynomial& other) const {
+        vector<double> quotient(coefficients.size(), 0);
+        if (other.coefficients.empty() || other.coefficients[0] == 0) {
+            throw runtime_error("Пустой или нулевой делитель.");
+        }
+        vector<double> dividend = coefficients;
+        while (dividend.size() >= other.coefficients.size() && dividend[0] != 0) {
+            double coeff = dividend[0] / other.coefficients[0];
+            quotient[dividend.size() - other.coefficients.size()] = coeff;
+            vector<double> temp(dividend.size(), 0);
+            for (int i = 0; i < other.coefficients.size(); i++) {
+                temp[i] = coeff * other.coefficients[i];
             }
-            else
-            {
-                result[i] = coefficients[i] * 0;
+            for (int i = 0; i < other.coefficients.size(); i++) {
+                dividend[i] -= temp[i];
+            }
+            while (!dividend.empty() && dividend[0] == 0) {
+                dividend.erase(dividend.begin());
             }
         }
-        tempDegree--;
-        return Polynomial(result);
+        return Polynomial(dividend);
+    };
+
+    //получение производной
+    Polynomial derivative() {
+        int n = coefficients.size();
+        if (n <= 1) {
+            return Polynomial(0);
+        }
+        vector<double> derivativeCoeffs(n - 1, 0.0);
+        for (int i = 0; i < n - 1; i++) {
+            derivativeCoeffs[i] = (n - i - 1) * coefficients[i];
+        }
+        return Polynomial(derivativeCoeffs);
     }
 };
