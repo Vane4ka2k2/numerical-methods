@@ -124,33 +124,47 @@ public:
 
     //деление
     Polynomial operator/ (const Polynomial& other) {
+        // Проверяем, что делитель не является нулевым многочленом
         if (other.getDegree() == 0 && other.coefficients[0] == 0.0) {
             throw invalid_argument("Деление на нулевой многочлен");
         }
 
+        // Если степень текущего многочлена меньше степени делителя,
+        // результат деления будет нулевым многочленом.
         if (degree < other.getDegree()) {
             return Polynomial(); // Результат деления меньшего многочлена на больший - ноль.
         }
 
+        // Создаем вектор коэффициентов для результирующего многочлена
         vector<double> resultCoeffs(degree - other.getDegree() + 1, 0.0);
+
+        // Создаем временную копию коэффициентов текущего многочлена
         vector<double> tempCoeffs(coefficients);
 
+        // Пока степень текущего многочлена больше или равна степени делителя
         while (degree >= other.getDegree()) {
+            // Определяем текущую степень для вычисления частного
             int currentDegree = degree - other.getDegree();
+
+            // Вычисляем частное
             double quotient = tempCoeffs[degree] / other.coefficients[other.getDegree()];
 
+            // Записываем частное в результирующий многочлен
             resultCoeffs[currentDegree] = quotient;
 
+            // Вычитаем произведение делителя на частное из текущего многочлена
             for (int i = 0; i <= other.getDegree(); i++) {
                 tempCoeffs[i + currentDegree] -= quotient * other.coefficients[i];
             }
 
+            // Удаляем нулевые коэффициенты в конце многочлена
             while (tempCoeffs.back() == 0.0 && degree > 0) {
                 tempCoeffs.pop_back();
                 degree--;
             }
         }
 
+        // Возвращаем результирующий многочлен
         return Polynomial(resultCoeffs);
     }
 };
