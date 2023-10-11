@@ -5,17 +5,18 @@ using namespace std;
 
 class Polynomial {
 private:
-    int degree;
-    vector<double> coefficients;
+    int degree;                     //степень многочлена
+    vector<double> coefficients;    //вектор коэффициентов
 
 public:
-    Polynomial() : degree(0), coefficients(1, 0.0) {}
-    Polynomial(int _degree) : degree(_degree), coefficients(_degree + 1, 0.0) {}
-    Polynomial(const vector<double>& coeffs) : degree(coeffs.size() - 1), coefficients(coeffs) {}
-    ~Polynomial() {}
+    //конструкторы и деструктор
+    Polynomial() : degree(0), coefficients(1, 0.0) {}                                               //конструктор по умолчанию, создаёт нулевой многочлен
+    Polynomial(int _degree) : degree(_degree), coefficients(_degree + 1, 0.0) {}                    //создаёт многочлен заданной степени
+    Polynomial(const vector<double>& coeffs) : degree(coeffs.size() - 1), coefficients(coeffs) {}   //создаёт многочлен из вектора коэффициентов
+    ~Polynomial() {}                                                                                //деструктор
 
     int getDegree() const {
-        return degree;
+        return degree;  //возвращает степень многочлена
     }
 
     void input() {
@@ -69,6 +70,8 @@ public:
         }
     }
 
+    //перегрузка операторов
+    //сложение
     Polynomial operator+ (const Polynomial& other) const {
         int maxDegree = max(degree, other.degree);
         vector<double> resultCoeffs(maxDegree + 1, 0.0);
@@ -81,6 +84,7 @@ public:
         return Polynomial(resultCoeffs);
     }
 
+    //вычитание
     Polynomial operator- (const Polynomial& other) const {
         int maxDegree = max(degree, other.degree);
         vector<double> resultCoeffs(maxDegree + 1, 0.0);
@@ -93,6 +97,7 @@ public:
         return Polynomial(resultCoeffs);
     }
 
+    //умножение
     Polynomial operator* (const Polynomial& other) const {
         int resultDegree = degree + other.degree;
         vector<double> resultCoeffs(resultDegree + 1, 0.0);
@@ -106,6 +111,7 @@ public:
         return Polynomial(resultCoeffs);
     }
 
+    //умножение на число
     Polynomial operator* (const double& scalar) const {
         vector<double> resultCoeffs(coefficients);
 
@@ -116,9 +122,10 @@ public:
         return Polynomial(resultCoeffs);
     }
 
+    //деление
     Polynomial operator/ (const Polynomial& other) {
         if (other.getDegree() == 0 && other.coefficients[0] == 0.0) {
-            throw invalid_argument("Division by zero polynomial");
+            throw invalid_argument("Деление на нулевой многочлен");
         }
 
         if (degree < other.getDegree()) {
@@ -146,5 +153,4 @@ public:
 
         return Polynomial(resultCoeffs);
     }
-
 };
