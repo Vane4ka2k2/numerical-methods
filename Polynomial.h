@@ -19,6 +19,7 @@ public:
         return degree;  //возвращает степень многочлена
     }
 
+    //очевидно
     void input() {
         cout << "Введите степень многочлена: ";
         cin >> degree;
@@ -31,6 +32,7 @@ public:
         }
     }
 
+    //аналогично
     void print() const {
         bool isFirstTerm = true;
 
