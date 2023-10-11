@@ -5,146 +5,146 @@ using namespace std;
 
 class Polynomial {
 private:
-	//вектор коэффициентов
-	vector<double> coefficients;
+    int degree;
+    vector<double> coefficients;
 
 public:
-	//Конструктор по умолчанию, создаёт многочлен с нулевыми коэффициентами
-	Polynomial() : coefficients{ 0 } {};
+    Polynomial() : degree(0), coefficients(1, 0.0) {}
+    Polynomial(int _degree) : degree(_degree), coefficients(_degree + 1, 0.0) {}
+    Polynomial(const vector<double>& coeffs) : degree(coeffs.size() - 1), coefficients(coeffs) {}
+    ~Polynomial() {}
 
-	//Конструктор с передачей вектора коэффициентов
-	Polynomial(const vector<double>& coeffs) : coefficients(coeffs) {};
+    int getDegree() const {
+        return degree;
+    }
 
-	//Деструктор
-	~Polynomial() {};
+    void input() {
+        cout << "Р’РІРµРґРёС‚Рµ СЃС‚РµРїРµРЅСЊ РјРЅРѕРіРѕС‡Р»РµРЅР°: ";
+        cin >> degree;
 
-	//Ввод многочлена с клавиатуры
-	void input() {
-		int degree;
-		cout << "Введите степень многочлена: ";
-		cin >> degree;
+        coefficients.resize(degree + 1);
 
-		coefficients.resize(degree + 1);
+        for (int i = degree; i >= 0; i--) {
+            cout << "Р’РІРµРґРёС‚Рµ РєРѕСЌС„С„РёС†РёРµРЅС‚ РїСЂРё x^" << i << ": ";
+            cin >> coefficients[i];
+        }
+    }
 
-		for (int i = degree; i >= 0; i--) {
-			cout << "Введите коэффициент при x^" << i << ": ";
-			cin >> coefficients[i];
-		}
-	};
+    void print() const {
+        bool isFirstTerm = true;
 
-	//Перегрузка оператора сложения
-	Polynomial operator+ (const Polynomial& other) const {
-		vector<double> result(max(coefficients.size(), other.coefficients.size()), 0);
+        for (int i = degree; i >= 0; i--) {
+            if (coefficients[i] != 0.0) {
+                if (!isFirstTerm) {
+                    if (coefficients[i] > 0) {
+                        cout << " + ";
+                    }
+                    else {
+                        cout << " - ";
+                    }
+                }
+                else {
+                    isFirstTerm = false;
+                    if (coefficients[i] < 0) {
+                        cout << "-";
+                    }
+                }
 
-		for (int i = 0; i < coefficients.size(); i++) {
-			result[i] += coefficients[i];
-		}
+                double absCoefficient = abs(coefficients[i]);
+                if (i == 0 || absCoefficient != 1.0) {
+                    cout << absCoefficient;
+                }
 
-		for (int i = 0; i < other.coefficients.size(); i++) {
-			result[i] += other.coefficients[i];
-		}
+                if (i > 0) {
+                    cout << "x";
+                    if (i > 1) {
+                        cout << "^" << i;
+                    }
+                }
+            }
+        }
 
-		return Polynomial(result);
-	};
+        if (isFirstTerm) {
+            cout << "0";
+        }
+    }
 
-	//Перегрузка оператора вычитания
-	Polynomial operator- (const Polynomial& other) const {
-		vector<double> result(max(coefficients.size(), other.coefficients.size()), 0);
+    Polynomial operator+ (const Polynomial& other) const {
+        int maxDegree = max(degree, other.degree);
+        vector<double> resultCoeffs(maxDegree + 1, 0.0);
 
-		for (int i = 0; i < coefficients.size(); i++) {
-			result[i] += coefficients[i];
-		}
+        for (int i = 0; i <= maxDegree; i++) {
+            if (i <= degree) resultCoeffs[i] += coefficients[i];
+            if (i <= other.degree) resultCoeffs[i] += other.coefficients[i];
+        }
 
-		for (int i = 0; i < other.coefficients.size(); i++) {
-			result[i] -= other.coefficients[i];
-		}
+        return Polynomial(resultCoeffs);
+    }
 
-		return Polynomial(result);
-	};
+    Polynomial operator- (const Polynomial& other) const {
+        int maxDegree = max(degree, other.degree);
+        vector<double> resultCoeffs(maxDegree + 1, 0.0);
 
-	//Перегрузка оператора умножения
-	Polynomial operator* (const Polynomial& other) const {
-		vector<double> result(coefficients.size() + other.coefficients.size() - 1, 0);
+        for (int i = 0; i <= maxDegree; i++) {
+            if (i <= degree) resultCoeffs[i] += coefficients[i];
+            if (i <= other.degree) resultCoeffs[i] -= other.coefficients[i];
+        }
 
-		for (int i = 0; i < coefficients.size(); i++) {
-			for (int j = 0; j < other.coefficients.size(); j++) {
-				result[i + j] += coefficients[i] * other.coefficients[j];
-			}
-		}
+        return Polynomial(resultCoeffs);
+    }
 
-		return Polynomial(result);
-	};
+    Polynomial operator* (const Polynomial& other) const {
+        int resultDegree = degree + other.degree;
+        vector<double> resultCoeffs(resultDegree + 1, 0.0);
 
-	//Перегрузка оператора умножения для числа
-	Polynomial operator* (const double& other) const {
-		vector<double> result(coefficients.size(), 0);
+        for (int i = 0; i <= degree; i++) {
+            for (int j = 0; j <= other.degree; j++) {
+                resultCoeffs[i + j] += coefficients[i] * other.coefficients[j];
+            }
+        }
 
-		for (int i = 0; i < coefficients.size(); i++) {
-				result[i] += coefficients[i] * other;
-		}
+        return Polynomial(resultCoeffs);
+    }
 
-		return Polynomial(result);
-	};
+    Polynomial operator* (const double& scalar) const {
+        vector<double> resultCoeffs(coefficients);
 
-	//Перегрузка оператора деления
-	Polynomial operator/ (const Polynomial& other) const {
-		vector<double> result;
-		vector<double> dividend = coefficients;
+        for (double& coeff : resultCoeffs) {
+            coeff *= scalar;
+        }
 
-		while (dividend.size() >= other.coefficients.size()) {
-			double coeff = dividend[0] / other.coefficients[0]; result.push_back(coeff);
+        return Polynomial(resultCoeffs);
+    }
 
-			for (int i = 0; i < other.coefficients.size(); i++) {
-				dividend[i] -= coeff * other.coefficients[i];
-			}
+    Polynomial operator/ (const Polynomial& other) {
+        if (other.getDegree() == 0 && other.coefficients[0] == 0.0) {
+            throw invalid_argument("Division by zero polynomial");
+        }
 
-			while (!dividend.empty() && dividend[0] == 0) {
-				dividend.erase(dividend.begin());
-			}
-		}
+        if (degree < other.getDegree()) {
+            return Polynomial(); // Р РµР·СѓР»СЊС‚Р°С‚ РґРµР»РµРЅРёСЏ РјРµРЅСЊС€РµРіРѕ РјРЅРѕРіРѕС‡Р»РµРЅР° РЅР° Р±РѕР»СЊС€РёР№ - РЅРѕР»СЊ.
+        }
 
-		if (result.empty()) {
-			result.push_back(0);
-		}
+        vector<double> resultCoeffs(degree - other.getDegree() + 1, 0.0);
+        vector<double> tempCoeffs(coefficients);
 
-		return Polynomial(result);
-	};
+        while (degree >= other.getDegree()) {
+            int currentDegree = degree - other.getDegree();
+            double quotient = tempCoeffs[degree] / other.coefficients[other.getDegree()];
 
-	//Перегрузка оператора деления для числа
-	Polynomial operator/ (const double& other) const {
-		vector<double> result(coefficients.size(), 0);
+            resultCoeffs[currentDegree] = quotient;
 
-		for (int i = 0; i < coefficients.size(); i++) {
-			result[i] += coefficients[i] / other;
-		}
+            for (int i = 0; i <= other.getDegree(); i++) {
+                tempCoeffs[i + currentDegree] -= quotient * other.coefficients[i];
+            }
 
-		return Polynomial(result);
-	};
+            while (tempCoeffs.back() == 0.0 && degree > 0) {
+                tempCoeffs.pop_back();
+                degree--;
+            }
+        }
 
-	//Перегрузка оператора вывода
-	friend ostream& operator<< (ostream& os, const Polynomial& poly) {
-		for (int i = poly.coefficients.size() - 1; i >= 0; i--) {
-			if (poly.coefficients[i] != 0) {
-				if (i < poly.coefficients.size() - 1) {
-					if (poly.coefficients[i] > 0) {
-						os << "+";
-					}
-				}
-				if (i > 0) {
-					if (poly.coefficients[i] != 1) {
-						os << poly.coefficients[i];
-					}
-					os << "x";
-					if (i > 1) {
-						os << "^" << i;
-					}
-				}
-				else {
-					os << poly.coefficients[i];
-				}
-			}
-		}
+        return Polynomial(resultCoeffs);
+    }
 
-		return os;
-	};
 };
