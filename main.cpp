@@ -14,7 +14,10 @@ int main() {
 	cout << "Многочлен p2 имеет степень: " << p2.getDegree() << endl;
 	Polynomial p3 = p1 / p2;
 	cout << "p3 = p1 / p2: "; p3.print(); cout << ". ";
-	cout << "Многочлен p3 имеет степень: " << p3.getDegree() << endl;
+	cout << "Многочлен p3 имеет степень: " << p3.getDegree() << endl << endl;
 
+	Polynomial p4 = p1.derivative();
+	cout << "p4 = p1': "; p4.print(); cout << endl;
+	cout << "p1: "; p1.print(); cout << endl;
 	return 0;
 }
