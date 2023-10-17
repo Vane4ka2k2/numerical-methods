@@ -4,9 +4,9 @@ using namespace std;
 
 class Polynomial {
 private:
-	vector<double> coefficients; //вектор коэффициентов
+	vector<double> coefficients; // Вектор коэффициентов
 public:
-	//конструкторы и деструктор
+	// Конструкторы и деструктор
 	Polynomial() {}
 	Polynomial(const vector<double>& coeffs) : coefficients(coeffs) {}
 	~Polynomial() {}
@@ -133,6 +133,17 @@ public:
 		}
 
 		return Polynomial(dividend);
+	}
+
+	// Взятие производной от многочлена
+	Polynomial derivative() const {
+		vector<double> result(coefficients.size() - 1, 0);
+
+		for (size_t i = 1; i < coefficients.size(); ++i) {
+			result[i - 1] = coefficients[i] * i;
+		}
+
+		return Polynomial(result);
 	}
 
 	//ввод многочлена с клавиатуры
