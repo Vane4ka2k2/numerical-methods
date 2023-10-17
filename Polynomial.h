@@ -1,211 +1,188 @@
-#pragma once
-#include <iostream>
 #include <vector>
+#include <iostream>
 using namespace std;
 
 class Polynomial {
 private:
-    int degree;                     //степень многочлена
-    vector<double> coefficients;    //вектор коэффициентов
-
+	vector<double> coefficients; //вектор коэффициентов
 public:
-    //конструкторы и деструктор
-    Polynomial() : degree(0), coefficients(1, 0.0) {}                                               //конструктор по умолчанию, создаёт нулевой многочлен
-    Polynomial(int _degree) : degree(_degree), coefficients(_degree + 1, 0.0) {}                    //создаёт многочлен заданной степени
-    Polynomial(const vector<double>& coeffs) : degree(coeffs.size() - 1), coefficients(coeffs) {}   //создаёт многочлен из вектора коэффициентов
-    ~Polynomial() {}                                                                                //деструктор
+	//конструкторы и деструктор
+	Polynomial() {}
+	Polynomial(const vector<double>& coeffs) : coefficients(coeffs) {}
+	~Polynomial() {}
 
-    int getDegree() const {
-        return degree;  //возвращает степень многочлена
-    }
+	// Перегрузка оператора сложения для многочлена + многочлен
+	Polynomial operator+(const Polynomial& other) const {
+		vector<double> result(max(coefficients.size(), other.coefficients.size()));
 
-    //очевидно
-    void input() {
-        cout << "Введите степень многочлена: ";
-        cin >> degree;
+		for (size_t i = 0; i < coefficients.size(); ++i) {
+			result[i] += coefficients[i];
+		}
 
-        coefficients.resize(degree + 1);
+		for (size_t i = 0; i < other.coefficients.size(); ++i) {
+			result[i] += other.coefficients[i];
+		}
 
-        for (int i = degree; i >= 0; i--) {
-            cout << "Введите коэффициент при x^" << i << ": ";
-            cin >> coefficients[i];
-        }
-    }
+		return Polynomial(result);
+	}
 
-    //аналогично
-    void print() const {
-        bool isFirstTerm = true;
+	// Перегрузка оператора сложения для многочлена + числа
+	Polynomial operator+(double scalar) const {
+		vector<double> result(coefficients);
 
-        for (int i = degree; i >= 0; i--) {
-            if (coefficients[i] != 0.0) {
-                if (!isFirstTerm) {
-                    if (coefficients[i] > 0) {
-                        cout << " + ";
-                    }
-                    else {
-                        cout << " - ";
-                    }
-                }
-                else {
-                    isFirstTerm = false;
-                    if (coefficients[i] < 0) {
-                        cout << "-";
-                    }
-                }
+		result[0] += scalar;
 
-                double absCoefficient = abs(coefficients[i]);
-                if (i == 0 || absCoefficient != 1.0) {
-                    cout << absCoefficient;
-                }
+		return Polynomial(result);
+	}
 
-                if (i > 0) {
-                    cout << "x";
-                    if (i > 1) {
-                        cout << "^" << i;
-                    }
-                }
-            }
-        }
+	// Перегрузка оператора вычитания для многочлена - многочлен
+	Polynomial operator-(const Polynomial& other) const {
+		vector<double> result(max(coefficients.size(), other.coefficients.size()));
 
-        if (isFirstTerm) {
-            cout << "0";
-        }
-    }
+		for (size_t i = 0; i < coefficients.size(); ++i) {
+			result[i] += coefficients[i];
+		}
 
-    //перегрузка операторов
-    //сложение
-    Polynomial operator+ (const Polynomial& other) const {
-        int maxDegree = max(degree, other.degree);
-        vector<double> resultCoeffs(maxDegree + 1, 0.0);
+		for (size_t i = 0; i < other.coefficients.size(); ++i) {
+			result[i] -= other.coefficients[i];
+		}
 
-        for (int i = 0; i <= maxDegree; i++) {
-            if (i <= degree) resultCoeffs[i] += coefficients[i];
-            if (i <= other.degree) resultCoeffs[i] += other.coefficients[i];
-        }
+		return Polynomial(result);
+	}
 
-        return Polynomial(resultCoeffs);
-    }
+	// Перегрузка оператора вычитания для многочлена - числа
+	Polynomial operator-(double scalar) const {
+		vector<double> result(coefficients);
 
-    //вычитание
-    Polynomial operator- (const Polynomial& other) const {
-        int maxDegree = max(degree, other.degree);
-        vector<double> resultCoeffs(maxDegree + 1, 0.0);
+		result[0] -= scalar;
 
-        for (int i = 0; i <= maxDegree; i++) {
-            if (i <= degree) resultCoeffs[i] += coefficients[i];
-            if (i <= other.degree) resultCoeffs[i] -= other.coefficients[i];
-        }
+		return Polynomial(result);
+	}
 
-        return Polynomial(resultCoeffs);
-    }
+	// Перегрузка оператора умножения для многочлена * многочлен
+	Polynomial operator*(const Polynomial& other) const {
+		vector<double> result(coefficients.size() + other.coefficients.size() - 1, 0);
 
-    //умножение
-    Polynomial operator* (const Polynomial& other) const {
-        int resultDegree = degree + other.degree;
-        vector<double> resultCoeffs(resultDegree + 1, 0.0);
+		for (size_t i = 0; i < coefficients.size(); ++i) {
+			for (size_t j = 0; j < other.coefficients.size(); ++j) {
+				result[i + j] += coefficients[i] * other.coefficients[j];
+			}
+		}
 
-        for (int i = 0; i <= degree; i++) {
-            for (int j = 0; j <= other.degree; j++) {
-                resultCoeffs[i + j] += coefficients[i] * other.coefficients[j];
-            }
-        }
+		return Polynomial(result);
+	}
 
-        return Polynomial(resultCoeffs);
-    }
+	// Перегрузка оператора умножения для многочлена * числа
+	Polynomial operator*(double scalar) const {
+		vector<double> result(coefficients);
 
-    //умножение на число
-    Polynomial operator* (const double& scalar) const {
-        vector<double> resultCoeffs(coefficients);
+		for (size_t i = 0; i < result.size(); ++i) {
+			result[i] *= scalar;
+		}
 
-        for (double& coeff : resultCoeffs) {
-            coeff *= scalar;
-        }
+		return Polynomial(result);
+	}
 
-        return Polynomial(resultCoeffs);
-    }
+	// Перегрузка оператора деления для многочлена / многочлен
+	Polynomial operator/(const Polynomial& other) const {
+		vector<double> dividend(coefficients);
+		vector<double> quotient;
 
-    //деление
-    Polynomial operator/ (const Polynomial& other) {
-        double tempDegree = degree;
+		while (dividend.size() >= other.coefficients.size()) {
+			double factor = dividend.back() / other.coefficients.back();
+			quotient.push_back(factor);
 
-        // Проверяем, что делитель не является нулевым многочленом
-        if (other.getDegree() == 0 && other.coefficients[0] == 0.0) {
-            throw invalid_argument("Деление на нулевой многочлен");
-        }
+			for (size_t i = 0; i < other.coefficients.size(); ++i) {
+				dividend[dividend.size() - i - 1] -= factor * other.coefficients[other.coefficients.size() - i - 1];
+			}
 
-        // Если степень текущего многочлена меньше степени делителя,
-        // результат деления будет нулевым многочленом.
-        if (tempDegree < other.getDegree()) {
-            return Polynomial(); // Результат деления меньшего многочлена на больший - ноль.
-        }
+			while (!dividend.empty() && dividend.back() == 0) {
+				dividend.pop_back();
+			}
+		}
 
-        // Создаем вектор коэффициентов для результирующего многочлена
-        vector<double> resultCoeffs(tempDegree - other.getDegree() + 1, 0.0);
+		reverse(quotient.begin(), quotient.end());
+		return Polynomial(quotient);
+	}
 
-        // Создаем временную копию коэффициентов текущего многочлена
-        vector<double> tempCoeffs(coefficients);
+	// Перегрузка оператора деления для многочлена / числа
+	Polynomial operator/(double scalar) const {
+		vector<double> result(coefficients);
 
-        // Пока степень текущего многочлена больше или равна степени делителя
-        while (tempDegree >= other.getDegree()) {
-            // Определяем текущую степень для вычисления частного
-            int currentDegree = tempDegree - other.getDegree();
+		for (size_t i = 0; i < result.size(); ++i) {
+			result[i] /= scalar;
+		}
 
-            // Вычисляем частное
-            double quotient = tempCoeffs[tempDegree] / other.coefficients[other.getDegree()];
+		return Polynomial(result);
+	}
 
-            // Записываем частное в результирующий многочлен
-            resultCoeffs[currentDegree] = quotient;
+	// Перегрузка оператора остатка для многочлена / многочлен
+	Polynomial operator%(const Polynomial& other) const {
+		vector<double> dividend(coefficients);
 
-            // Вычитаем произведение делителя на частное из текущего многочлена
-            for (int i = 0; i <= other.getDegree(); i++) {
-                tempCoeffs[i + currentDegree] -= quotient * other.coefficients[i];
-            }
+		while (dividend.size() >= other.coefficients.size()) {
+			double factor = dividend.back() / other.coefficients.back();
 
-            // Удаляем нулевые коэффициенты в конце многочлена
-            while (tempCoeffs.back() == 0.0 && degree > 0) {
-                tempCoeffs.pop_back();
-                tempDegree--;
-            }
-        }
+			for (size_t i = 0; i < other.coefficients.size(); ++i) {
+				dividend[dividend.size() - i - 1] -= factor * other.coefficients[other.coefficients.size() - i - 1];
+			}
 
-        // Возвращаем результирующий многочлен
-        return Polynomial(resultCoeffs);
-    }
+			while (!dividend.empty() && dividend.back() == 0) {
+				dividend.pop_back();
+			}
+		}
 
-    //остаток от деления
-    Polynomial operator% (const Polynomial& other) const {
-        vector<double> quotient(coefficients.size(), 0);
-        if (other.coefficients.empty() || other.coefficients[0] == 0) {
-            throw runtime_error("Пустой или нулевой делитель.");
-        }
-        vector<double> dividend = coefficients;
-        while (dividend.size() >= other.coefficients.size() && dividend[0] != 0) {
-            double coeff = dividend[0] / other.coefficients[0];
-            quotient[dividend.size() - other.coefficients.size()] = coeff;
-            vector<double> temp(dividend.size(), 0);
-            for (int i = 0; i < other.coefficients.size(); i++) {
-                temp[i] = coeff * other.coefficients[i];
-            }
-            for (int i = 0; i < other.coefficients.size(); i++) {
-                dividend[i] -= temp[i];
-            }
-            while (!dividend.empty() && dividend[0] == 0) {
-                dividend.erase(dividend.begin());
-            }
-        }
-        return Polynomial(dividend);
-    };
+		return Polynomial(dividend);
+	}
 
-    //получение производной
-    Polynomial derivative() {
-        int n = coefficients.size();
-        if (n <= 1) {
-            return Polynomial(0);
-        }
-        vector<double> derivativeCoeffs(n - 1, 0.0);
-        for (int i = 0; i < n - 1; i++) {
-            derivativeCoeffs[i] = (n - i - 1) * coefficients[i];
-        }
-        return Polynomial(derivativeCoeffs);
-    }
+	//ввод многочлена с клавиатуры
+	void input() {
+		int degree = 0;
+		cout << "Введите степень многочлена: ";
+		cin >> degree;
+
+		coefficients.resize(degree + 1);
+
+		for (int i = degree; i >= 0; i--) {
+			cout << "Введите коэффициент при x^" << i << ": ";
+			cin >> coefficients[i];
+		}
+	}
+
+	// Вывод многочлена на экран
+	void print() const {
+		bool isFirstTerm = true;
+
+		for (int i = coefficients.size() - 1; i >= 0; i--) {
+			if (coefficients[i] != 0.0) {
+				if (!isFirstTerm) {
+					if (coefficients[i] > 0) {
+						cout << " + ";
+					}
+					else {
+						cout << " - ";
+					}
+				}
+				else {
+					isFirstTerm = false;
+					if (coefficients[i] < 0) {
+						cout << "-";
+					}
+				}
+				double absCoefficient = abs(coefficients[i]);
+				if (i == 0 || absCoefficient != 1.0) {
+					cout << absCoefficient;
+				}
+				if (i > 0) {
+					cout << "x";
+					if (i > 1) {
+						cout << "^" << i;
+					}
+				}
+			}
+		}
+		if (isFirstTerm) {
+			cout << "0";
+		}
+	}
 };
