@@ -1,40 +1,24 @@
-#include "Polynomial.h"
+#include "Polynomial.hpp"
 #include <iostream>
+#include <vector>
 using namespace std;
 
 int main() {
-	setlocale(LC_ALL, "Russian");
+    setlocale(LC_ALL, "Russian");
 
-	Polynomial p1({ 1, -1, 1, 0, 2, 3 });
-	Polynomial p2({ 0, 1, 2, 1 });
+    Polynomial poly1;
+    Polynomial poly2;
 
-	cout << "p1: "; p1.print(); cout << ". ";
-	cout << "Многочлен p1 имеет степень: " << p1.getDegree() << endl;
-	cout << "p2: "; p2.print(); cout << ". ";
-	cout << "Многочлен p2 имеет степень: " << p2.getDegree() << endl;
-	Polynomial p3 = p1 / p2;
-	cout << "p3 = p1 / p2: "; p3.print(); cout << ". ";
-	cout << "Многочлен p3 имеет степень: " << p3.getDegree() << endl << endl;
+    poly1.input();
+    poly2.input();
 
-	Polynomial p4 = p1.derivative();
-	cout << "p4 = p1': "; p4.print(); cout << endl;
-	cout << "Многочлен p1 имеет степень: " << p1.getDegree() << endl;
-	cout << "Многочлен p4 имеет степень: " << p4.getDegree() << endl << endl;
-	cout << "p1: "; p1.print(); cout << endl;
-	Polynomial p5 = p1 / p4;
-	cout << "p5: "; p5.print(); cout << endl;
+    Polynomial quotient = poly1 / poly2;
+    Polynomial remainder = poly1 % poly2;
 
-	cout << endl;
-	cout << "p1: "; p1.print(); cout << ". ";
-	cout << "Многочлен p1 имеет степень: " << p1.getDegree() << endl;
-	cout << "p2: "; p2.print(); cout << ". ";
-	cout << "Многочлен p2 имеет степень: " << p2.getDegree() << endl;
-	cout << "p3: "; p3.print(); cout << ". ";
-	cout << "Многочлен p3 имеет степень: " << p3.getDegree() << endl;
-	cout << "p4: "; p4.print(); cout << ". ";
-	cout << "Многочлен p4 имеет степень: " << p4.getDegree() << endl;
-	cout << "p5: "; p5.print(); cout << ". ";
-	cout << "Многочлен p5 имеет степень: " << p5.getDegree() << endl;
+    cout << "poly1: "; poly1.print(); cout << endl;
+    cout << "poly2: "; poly2.print(); cout << endl;
+    cout << "quotient: "; quotient.print(); cout << endl;
+    cout << "remainder: "; remainder.print(); cout << endl;
 
-	return 0;
+    return 0;
 }
