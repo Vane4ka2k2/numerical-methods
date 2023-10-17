@@ -14,11 +14,13 @@ int main() {
 
     Polynomial quotient = poly1 / poly2;
     Polynomial remainder = poly1 % poly2;
+    Polynomial derivative = poly1.derivative();
 
     cout << "poly1: "; poly1.print(); cout << endl;
     cout << "poly2: "; poly2.print(); cout << endl;
     cout << "quotient: "; quotient.print(); cout << endl;
     cout << "remainder: "; remainder.print(); cout << endl;
+    cout << "derivative poly1: "; derivative.print(); cout << endl;
 
     return 0;
 }
