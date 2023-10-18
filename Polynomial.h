@@ -225,7 +225,6 @@ public:
 		Polynomial divisor = other;
 		Polynomial quotient = dividend / divisor;
 		Polynomial remainder = dividend % divisor;
-		Polynomial zero({ 0.0 });
 
 		while (!remainder.coefficients.empty()) {
 			dividend = divisor;
@@ -236,6 +235,23 @@ public:
 
 		return divisor;
 	};
+
+	// Устранение кратности корней многочлена
+	Polynomial removeMultiplicity()  const {
+		Polynomial dividend = *this;
+		Polynomial divisor = this->derivative();
+		Polynomial quotient = dividend / divisor;
+		Polynomial remainder = dividend % divisor;
+
+		while (!remainder.coefficients.empty()) {
+			dividend = divisor;
+			divisor = remainder;
+			quotient = dividend / divisor;
+			remainder = dividend % divisor;
+		}
+
+		return divisor;
+	}
 
 	//ввод многочлена с клавиатуры
 	void input() {
