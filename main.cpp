@@ -1,4 +1,4 @@
-#include "Polynomial.h"
+#include "Polynomial.hpp"
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -14,13 +14,13 @@ int main() {
     Polynomial poly6 = poly1 % poly3;
     Polynomial poly7 = poly2 % poly3;
 
-    cout << "poly1: "; poly1.print(); cout << endl;
+    cout << "poly1: " << poly1 << endl;
     cout << "poly2: "; poly2.print(); cout << endl;
     cout << "poly3: "; poly3.print(); cout << endl;
     cout << "poly4: "; poly4.print(); cout << endl;
     cout << "poly5: "; poly5.print(); cout << endl;
     cout << "poly6: "; poly6.print(); cout << endl;
-    cout << "poly7: "; poly7.print(); cout << endl;
+    cout << "poly7: " << poly7 << endl;
 
     return 0;
 }
