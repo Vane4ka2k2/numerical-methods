@@ -6,21 +6,13 @@ using namespace std;
 int main() {
     setlocale(LC_ALL, "Russian");
 
-    Polynomial poly1;
-    Polynomial poly2;
-
-    poly1.input();
-    poly2.input();
-
-    Polynomial quotient = poly1 / poly2;
-    Polynomial remainder = poly1 % poly2;
-    Polynomial derivative = poly1.derivative();
+    Polynomial poly1({ -5, 8, -3, -4, 2, 0, 1 });
+    Polynomial poly2({ 1, -1, 1, 0, 0, 1 });
+    Polynomial poly3 = poly1.gcd(poly2);
 
     cout << "poly1: "; poly1.print(); cout << endl;
     cout << "poly2: "; poly2.print(); cout << endl;
-    cout << "quotient: "; quotient.print(); cout << endl;
-    cout << "remainder: "; remainder.print(); cout << endl;
-    cout << "derivative poly1: "; derivative.print(); cout << endl;
+    cout << "poly3: "; poly3.print(); cout << endl;
 
     return 0;
 }
