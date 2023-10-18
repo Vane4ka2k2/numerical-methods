@@ -1,5 +1,5 @@
-#include <vector>
 #include <iostream>
+#include <vector>
 using namespace std;
 
 class Polynomial {
@@ -73,7 +73,7 @@ public:
 	};
 
 	// Перегрузка оператора сложения для многочлена + число
-	Polynomial operator+(double scalar) const {
+	Polynomial operator+(const double& scalar) const {
 		vector<double> result(coefficients);
 
 		result[0] += scalar;
@@ -103,7 +103,7 @@ public:
 	};
 
 	// Перегрузка оператора вычитания для многочлена - число
-	Polynomial operator-(double scalar) const {
+	Polynomial operator-(const double& scalar) const {
 		vector<double> result(coefficients);
 
 		result[0] -= scalar;
@@ -131,7 +131,7 @@ public:
 	};
 
 	// Перегрузка оператора умножения для многочлена * число
-	Polynomial operator*(double scalar) const {
+	Polynomial operator*(const double& scalar) const {
 		vector<double> result(coefficients);
 
 		for (size_t i = 0; i < result.size(); ++i) {
@@ -170,7 +170,7 @@ public:
 	};
 
 	// Перегрузка оператора деления для многочлена / число
-	Polynomial operator/(double scalar) const {
+	Polynomial operator/(const double& scalar) const {
 		vector<double> result(coefficients);
 
 		for (size_t i = 0; i < result.size(); ++i) {
@@ -237,7 +237,7 @@ public:
 	};
 
 	// Устранение кратности корней многочлена
-	Polynomial removeMultiplicity()  const {
+	Polynomial removeMultiplicity() const {
 		Polynomial dividend = *this;
 		Polynomial divisor = this->derivative();
 		Polynomial quotient = dividend / divisor;
