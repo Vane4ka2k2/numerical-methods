@@ -251,7 +251,7 @@ public:
 		}
 
 		return divisor;
-	}
+	};
 
 	//ввод многочлена с клавиатуры
 	void input() {
