@@ -11,6 +11,49 @@ public:
 	Polynomial(const vector<double>& coeffs) : coefficients(coeffs) {}
 	~Polynomial() {}
 
+	// Метод удаления незначащих нулей
+	void removeLeadingZeros() {
+		while (coefficients.size() > 1 && coefficients.back() == 0) {
+			coefficients.pop_back();
+		}
+	};
+
+	// Метод для округления коэффициентов
+	void roundCoefficients() {
+		for (size_t i = 0; i < coefficients.size(); ++i) {
+			coefficients[i] = round(coefficients[i] * 1000) / 1000;
+		}
+	};
+
+	// Перегрузка оператора не равно для многочлен != многочлен
+	bool operator!=(const Polynomial& other) const {
+		return coefficients != other.coefficients;
+	};
+
+	// Перегрузка оператора равно для многочлен == многочлен
+	bool operator==(const Polynomial& other) const {
+		return coefficients == other.coefficients;
+	};
+
+	// Перегрузка оператора больще для многочлен > многочлен
+	bool operator>(const Polynomial& other) const {
+		size_t maxDegree = std::max(coefficients.size(), other.coefficients.size());
+
+		for (size_t i = maxDegree; i > 0; --i) {
+			double thisCoeff = (i <= coefficients.size()) ? coefficients[i - 1] : 0;
+			double otherCoeff = (i <= other.coefficients.size()) ? other.coefficients[i - 1] : 0;
+
+			if (thisCoeff > otherCoeff) {
+				return true;
+			}
+			else if (thisCoeff < otherCoeff) {
+				return false;
+			}
+		}
+
+		return false; // Если все коэффициенты равны, то многочлены равны
+	}
+
 	// Перегрузка оператора сложения для многочлена + многочлен
 	Polynomial operator+(const Polynomial& other) const {
 		vector<double> result(max(coefficients.size(), other.coefficients.size()));
@@ -23,17 +66,23 @@ public:
 			result[i] += other.coefficients[i];
 		}
 
-		return Polynomial(result);
-	}
+		Polynomial res(result);
+		res.roundCoefficients();
+		res.removeLeadingZeros();
+		return res;
+	};
 
-	// Перегрузка оператора сложения для многочлена + числа
+	// Перегрузка оператора сложения для многочлена + число
 	Polynomial operator+(double scalar) const {
 		vector<double> result(coefficients);
 
 		result[0] += scalar;
 
-		return Polynomial(result);
-	}
+		Polynomial res(result);
+		res.roundCoefficients();
+		res.removeLeadingZeros();
+		return res;
+	};
 
 	// Перегрузка оператора вычитания для многочлена - многочлен
 	Polynomial operator-(const Polynomial& other) const {
@@ -47,17 +96,23 @@ public:
 			result[i] -= other.coefficients[i];
 		}
 
-		return Polynomial(result);
-	}
+		Polynomial res(result);
+		res.roundCoefficients();
+		res.removeLeadingZeros();
+		return res;
+	};
 
-	// Перегрузка оператора вычитания для многочлена - числа
+	// Перегрузка оператора вычитания для многочлена - число
 	Polynomial operator-(double scalar) const {
 		vector<double> result(coefficients);
 
 		result[0] -= scalar;
 
-		return Polynomial(result);
-	}
+		Polynomial res(result);
+		res.roundCoefficients();
+		res.removeLeadingZeros();
+		return res;
+	};
 
 	// Перегрузка оператора умножения для многочлена * многочлен
 	Polynomial operator*(const Polynomial& other) const {
@@ -69,10 +124,13 @@ public:
 			}
 		}
 
-		return Polynomial(result);
-	}
+		Polynomial res(result);
+		res.roundCoefficients();
+		res.removeLeadingZeros();
+		return res;
+	};
 
-	// Перегрузка оператора умножения для многочлена * числа
+	// Перегрузка оператора умножения для многочлена * число
 	Polynomial operator*(double scalar) const {
 		vector<double> result(coefficients);
 
@@ -80,8 +138,11 @@ public:
 			result[i] *= scalar;
 		}
 
-		return Polynomial(result);
-	}
+		Polynomial res(result);
+		res.roundCoefficients();
+		res.removeLeadingZeros();
+		return res;
+	};
 
 	// Перегрузка оператора деления для многочлена / многочлен
 	Polynomial operator/(const Polynomial& other) const {
@@ -102,10 +163,13 @@ public:
 		}
 
 		reverse(quotient.begin(), quotient.end());
-		return Polynomial(quotient);
-	}
+		Polynomial res(quotient);
+		res.roundCoefficients();
+		res.removeLeadingZeros();
+		return res;
+	};
 
-	// Перегрузка оператора деления для многочлена / числа
+	// Перегрузка оператора деления для многочлена / число
 	Polynomial operator/(double scalar) const {
 		vector<double> result(coefficients);
 
@@ -113,8 +177,11 @@ public:
 			result[i] /= scalar;
 		}
 
-		return Polynomial(result);
-	}
+		Polynomial res(result);
+		res.roundCoefficients();
+		res.removeLeadingZeros();
+		return res;
+	};
 
 	// Перегрузка оператора остатка для многочлена / многочлен
 	Polynomial operator%(const Polynomial& other) const {
@@ -132,8 +199,11 @@ public:
 			}
 		}
 
-		return Polynomial(dividend);
-	}
+		Polynomial res(dividend);
+		res.roundCoefficients();
+		res.removeLeadingZeros();
+		return res;
+	};
 
 	// Взятие производной от многочлена
 	Polynomial derivative() const {
@@ -143,8 +213,28 @@ public:
 			result[i - 1] = coefficients[i] * i;
 		}
 
-		return Polynomial(result);
-	}
+		Polynomial res(result);
+		res.roundCoefficients();
+		res.removeLeadingZeros();
+		return res;
+	};
+
+	Polynomial gcd(const Polynomial& other) const {
+		Polynomial dividend = *this;
+		Polynomial divisor = other;
+		Polynomial quotient = dividend / divisor;
+		Polynomial remainder = dividend % divisor;
+		Polynomial zero({ 0.0 });
+
+		while (!remainder.coefficients.empty()) {
+			dividend = divisor;
+			divisor = remainder;
+			quotient = dividend / divisor;
+			remainder = dividend % divisor;
+		}
+
+		return divisor;
+	};
 
 	//ввод многочлена с клавиатуры
 	void input() {
