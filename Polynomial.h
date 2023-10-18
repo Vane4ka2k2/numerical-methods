@@ -251,6 +251,22 @@ public:
 		}
 	}
 
+	// Перегрузка оператора >> для istream
+	friend istream& operator>>(istream& is, Polynomial& poly) {
+		int degree = 0;
+		cout << "Введите степень многочлена: ";
+		is >> degree;
+
+		poly.coefficients.resize(degree + 1);
+
+		for (int i = degree; i >= 0; i--) {
+			cout << "Введите коэффициент при x^" << i << ": ";
+			is >> poly.coefficients[i];
+		}
+
+		return is;
+	}
+
 	// Вывод многочлена на экран
 	void print() const {
 		bool isFirstTerm = true;
@@ -287,4 +303,43 @@ public:
 			cout << "0";
 		}
 	}
+
+	// Перегрузка оператора << для ostream
+	friend ostream& operator<<(ostream& os, const Polynomial& poly) {
+		bool isFirstTerm = true;
+
+		for (int i = poly.coefficients.size() - 1; i >= 0; i--) {
+			if (poly.coefficients[i] != 0.0) {
+				if (!isFirstTerm) {
+					if (poly.coefficients[i] > 0) {
+						os << " + ";
+					}
+					else {
+						os << " - ";
+					}
+				}
+				else {
+					isFirstTerm = false;
+					if (poly.coefficients[i] < 0) {
+						os << "-";
+					}
+				}
+				double absCoefficient = abs(poly.coefficients[i]);
+				if (i == 0 || absCoefficient != 1.0) {
+					os << absCoefficient;
+				}
+				if (i > 0) {
+					os << "x";
+					if (i > 1) {
+						os << "^" << i;
+					}
+				}
+			}
+		}
+		if (isFirstTerm) {
+			os << "0";
+		}
+
+		return os;
+	};
 };
