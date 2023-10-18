@@ -219,6 +219,7 @@ public:
 		return res;
 	};
 
+	// Нахождение НОД двух многочленов
 	Polynomial gcd(const Polynomial& other) const {
 		Polynomial dividend = *this;
 		Polynomial divisor = other;
