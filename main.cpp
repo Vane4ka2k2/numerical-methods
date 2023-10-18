@@ -6,15 +6,15 @@ using namespace std;
 int main() {
     setlocale(LC_ALL, "Russian");
 
-    Polynomial poly1({ 0, 1, 0, -2, 0, 1 });
-    Polynomial poly2 = poly1.derivative();
-    Polynomial poly3 = poly1.gcd(poly2);
-    Polynomial poly4 = poly1.removeMultiplicity();
+    Polynomial p1({ 0, 1, 0, -2, 0, 1 });
+    Polynomial derp1 = p1.derivative();
+    Polynomial p2 = p1.gcd(derp1);
+    Polynomial p3 = p1.removeMultiplicity();
 
-    cout << "poly1: " << poly1 << endl;
-    cout << "poly2: " << poly2 << endl;
-    cout << "poly3: " << poly3 << endl;
-    cout << "poly4: " << poly4 << endl;
+    cout << "p1: " << p1 << endl;
+    cout << "p1': " << derp1 << endl;
+    cout << "нод p1 и p1': " << p2 << endl;
+    cout << "p1 без кратных корней: " << p3 << endl;
 
     return 0;
 }
