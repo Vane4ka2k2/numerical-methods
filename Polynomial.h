@@ -147,11 +147,11 @@ public:
 	// Перегрузка оператора деления для многочлена / многочлен
 	Polynomial operator/(const Polynomial& other) const {
 		vector<double> dividend(coefficients);
-		vector<double> quotient;
+		vector<double> quotient((dividend.size() - 1) - (other.coefficients.size() - 1) + 1, 0);
 
 		while (dividend.size() >= other.coefficients.size()) {
 			double factor = dividend.back() / other.coefficients.back();
-			quotient.push_back(factor);
+			quotient[(dividend.size() - 1) - (other.coefficients.size() - 1)] = factor;
 
 			for (size_t i = 0; i < other.coefficients.size(); ++i) {
 				dividend[dividend.size() - i - 1] -= factor * other.coefficients[other.coefficients.size() - i - 1];
@@ -162,10 +162,8 @@ public:
 			}
 		}
 
-		reverse(quotient.begin(), quotient.end());
 		Polynomial res(quotient);
 		res.roundCoefficients();
-		res.removeLeadingZeros();
 		return res;
 	};
 
@@ -250,7 +248,7 @@ public:
 			remainder = dividend % divisor;
 		}
 
-		return divisor;
+		return *this / divisor;
 	};
 
 	//ввод многочлена с клавиатуры
