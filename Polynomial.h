@@ -6,12 +6,19 @@ class Polynomial {
 private:
 	vector<double> coefficients; // Вектор коэффициентов
 public:
-	// Конструкторы и деструктор
+	// Конструктор без параметров
 	Polynomial() {}
+	
+	// Конструктор с параметром
+	// input:
+	//	vector<double> - вектор коэффициентов
 	Polynomial(const vector<double>& coeffs) : coefficients(coeffs) {}
+	
+	// Деструктор без параметров
 	~Polynomial() {}
 
 	// Метод удаления незначащих нулей
+	// Удаляет незначащие нули из конца вектора
 	void removeLeadingZeros() {
 		while (coefficients.size() > 1 && coefficients.back() == 0) {
 			coefficients.pop_back();
@@ -19,6 +26,7 @@ public:
 	};
 
 	// Метод для округления коэффициентов
+	// Округляет все числа до 3-ёх знаков после запятой
 	void roundCoefficients() {
 		for (size_t i = 0; i < coefficients.size(); ++i) {
 			coefficients[i] = round(coefficients[i] * 1000) / 1000;
@@ -26,16 +34,28 @@ public:
 	};
 
 	// Перегрузка оператора не равно для многочлен != многочлен
+	// input:
+	//	Polynomial - Второй многолен
+	// output:
+	//	true или false
 	bool operator!=(const Polynomial& other) const {
 		return coefficients != other.coefficients;
 	};
 
 	// Перегрузка оператора равно для многочлен == многочлен
+	// input:
+	//	Polynomial - Второй многолен
+	// output:
+	//	true или false
 	bool operator==(const Polynomial& other) const {
 		return coefficients == other.coefficients;
 	};
 
 	// Перегрузка оператора больще для многочлен > многочлен
+	// input:
+	//	Polynomial - Второй многолен
+	// output:
+	//	true или false
 	bool operator>(const Polynomial& other) const {
 		size_t maxDegree = std::max(coefficients.size(), other.coefficients.size());
 
@@ -55,6 +75,10 @@ public:
 	}
 
 	// Перегрузка оператора сложения для многочлена + многочлен
+	// input:
+	//	Polynomial - Второй многолен
+	// output:
+	//	Polynomial - Результат сложения
 	Polynomial operator+(const Polynomial& other) const {
 		vector<double> result(max(coefficients.size(), other.coefficients.size()));
 
@@ -73,6 +97,10 @@ public:
 	};
 
 	// Перегрузка оператора сложения для многочлена + число
+	// input:
+	//	double - число
+	// output:
+	//	Polynomial - Результат сложения
 	Polynomial operator+(const double& scalar) const {
 		vector<double> result(coefficients);
 
@@ -85,6 +113,10 @@ public:
 	};
 
 	// Перегрузка оператора вычитания для многочлена - многочлен
+	// input:
+	//	Polynomial - Второй многочлен
+	// output:
+	//	Polynomial - Результат вычитания
 	Polynomial operator-(const Polynomial& other) const {
 		vector<double> result(max(coefficients.size(), other.coefficients.size()));
 
@@ -103,6 +135,10 @@ public:
 	};
 
 	// Перегрузка оператора вычитания для многочлена - число
+	// input:
+	//	double - число
+	// output:
+	//	Polynomial - Результат вычитания
 	Polynomial operator-(const double& scalar) const {
 		vector<double> result(coefficients);
 
@@ -115,6 +151,10 @@ public:
 	};
 
 	// Перегрузка оператора умножения для многочлена * многочлен
+	// input:
+	//	Polynomial - Второй многочлен
+	// output:
+	//	Polynomial - Результат умножения
 	Polynomial operator*(const Polynomial& other) const {
 		vector<double> result(coefficients.size() + other.coefficients.size() - 1, 0);
 
@@ -131,6 +171,10 @@ public:
 	};
 
 	// Перегрузка оператора умножения для многочлена * число
+	// input:
+	//	double - число
+	// output:
+	//	Polynomial - Результат умножения
 	Polynomial operator*(const double& scalar) const {
 		vector<double> result(coefficients);
 
@@ -145,6 +189,10 @@ public:
 	};
 
 	// Перегрузка оператора деления для многочлена / многочлен
+	// input:
+	//	Polynomial - Второй многочлен
+	// output:
+	//	Polynomial - Результат деления
 	Polynomial operator/(const Polynomial& other) const {
 		vector<double> dividend(coefficients);
 		vector<double> quotient((dividend.size() - 1) - (other.coefficients.size() - 1) + 1, 0);
@@ -168,6 +216,10 @@ public:
 	};
 
 	// Перегрузка оператора деления для многочлена / число
+	// input:
+	//	double - число
+	// output:
+	//	Polynomial - Результат деления (целая часть)
 	Polynomial operator/(const double& scalar) const {
 		vector<double> result(coefficients);
 
@@ -182,6 +234,10 @@ public:
 	};
 
 	// Перегрузка оператора остатка для многочлена / многочлен
+	// input:
+	//	Polynomial - ВТорой многочлен
+	// output:
+	//	Polynomial - Результат деления (остаток)
 	Polynomial operator%(const Polynomial& other) const {
 		vector<double> dividend(coefficients);
 
@@ -204,6 +260,8 @@ public:
 	};
 
 	// Взятие производной от многочлена
+	// output:
+	//	Polynomial - производная многочлена
 	Polynomial derivative() const {
 		vector<double> result(coefficients.size() - 1, 0);
 
@@ -218,6 +276,10 @@ public:
 	};
 
 	// Нахождение НОД двух многочленов
+	// input:
+	//	Polynomial - Второй многочлен
+	// output:
+	//	Polynomial - Наибольший общий делитель
 	Polynomial gcd(const Polynomial& other) const {
 		Polynomial dividend = *this;
 		Polynomial divisor = other;
@@ -235,6 +297,8 @@ public:
 	};
 
 	// Устранение кратности корней многочлена
+	// output:
+	//	Polynomial - Многочлен без кратных корней
 	Polynomial removeMultiplicity() const {
 		Polynomial dividend = *this;
 		Polynomial divisor = this->derivative();
@@ -251,7 +315,40 @@ public:
 		return *this / divisor;
 	};
 
-	//ввод многочлена с клавиатуры
+	// Вычисление значения многочлена в точке
+	// input:
+	//	double - Точка
+	// output:
+	//	double - Значение многочлена в переданной точке
+	double rootCalculation(const double& scalar) const {
+		double result = coefficients[0];
+
+		for (int i = 1; i < coefficients.size(); i++) {
+			result += coefficients[i] * pow(scalar, i);
+		}
+
+		return result;
+	}
+
+	// Метод Ньютона
+	double methodNewton() const {
+		const double eps = 0.001;
+		double value = 1;
+		double newValue = value;
+		Polynomial twoDerivative = this->derivative().derivative();
+		Polynomial poly2 = this->derivative();
+
+		if (this->rootCalculation(value) * twoDerivative.rootCalculation(value) > 0) {
+			while (!(abs(this->rootCalculation(value) / poly2.rootCalculation(value)) < eps)) {
+				newValue = value - this->rootCalculation(value) / poly2.rootCalculation(value);
+				value = newValue;
+			}
+		}
+
+		return newValue;
+	}
+
+	// Ввод многочлена с клавиатуры
 	void input() {
 		int degree = 0;
 		cout << "Введите степень многочлена: ";
