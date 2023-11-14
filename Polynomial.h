@@ -331,14 +331,26 @@ public:
 	}
 
 	// Метод Ньютона
-	double methodNewton() const {
+	// input:
+	//	leftValue - левая граница отрезка
+	//	rightValue - правая граница отрезка
+	// output:
+	//	double - корень уравнения
+	double methodNewton(double leftValue, double rightValue) const {
 		const double eps = 0.001;
 		double value = 1;
 		double newValue = value;
-		Polynomial twoDerivative = this->derivative().derivative();
+		Polynomial secondDerivative = this->derivative().derivative();
 		Polynomial poly2 = this->derivative();
 
-		if (this->rootCalculation(value) * twoDerivative.rootCalculation(value) > 0) {
+		if (this->rootCalculation(leftValue) * secondDerivative.rootCalculation(leftValue) > 0) {
+			value = leftValue;
+		}
+		else {
+			value = rightValue;
+		}
+
+		if (this->rootCalculation(value) * secondDerivative.rootCalculation(value) > 0) {
 			while (!(abs(this->rootCalculation(value) / poly2.rootCalculation(value)) < eps)) {
 				newValue = value - this->rootCalculation(value) / poly2.rootCalculation(value);
 				value = newValue;
@@ -346,6 +358,36 @@ public:
 		}
 
 		return newValue;
+	}
+
+	// Метод хорд и касательных
+	double methodChordsAndTangents(double leftValue, double rightValue) const {
+		double eps = 0.001;
+		Polynomial firstDerivative = this->derivative();
+		Polynomial secondDerivative = firstDerivative.derivative();
+
+		if (this->rootCalculation(leftValue) * this->rootCalculation(rightValue) < 0) {
+			while (abs(leftValue - rightValue) > (2 * eps)) {
+				if ((this->rootCalculation(leftValue) * secondDerivative.rootCalculation(leftValue)) < 0) {
+					leftValue = leftValue - this->rootCalculation(leftValue) * (leftValue - rightValue) / (this->rootCalculation(leftValue) - this->rootCalculation(rightValue));
+				}
+				else if ((this->rootCalculation(leftValue) * secondDerivative.rootCalculation(leftValue)) > 0) {
+					leftValue = leftValue - (this->rootCalculation(leftValue) / firstDerivative.rootCalculation(leftValue));
+				}
+
+				if ((this->rootCalculation(rightValue) * secondDerivative.rootCalculation(rightValue)) < 0) {
+					rightValue = rightValue - this->rootCalculation(rightValue) * (rightValue - leftValue) / (this->rootCalculation(rightValue) - this->rootCalculation(leftValue));
+				}
+				else if ((this->rootCalculation(rightValue) * secondDerivative.rootCalculation(rightValue)) > 0) {
+					rightValue = rightValue - (this->rootCalculation(rightValue) / firstDerivative.rootCalculation(rightValue));
+				}
+			}
+
+			return ((leftValue + rightValue) / 2);
+		}
+		else {
+			return -1;
+		}
 	}
 
 	// Ввод многочлена с клавиатуры
