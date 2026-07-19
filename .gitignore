@@ -1,0 +1,19 @@
+# Visual Studio and GCC build results
+.vs/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.exe
+*.obj
+*.o
+*.pdb
+*.ilk
+*.suo
+*.user
+*.db
+
+# Temporary and OS
+*~
+.DS_Store
+Thumbs.db

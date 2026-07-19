@@ -1,4 +1,4 @@
-#include "Polynomial.hpp"
+#include "Polynomial.h"
 #include <iostream>
 #include <vector>
 using namespace std;
