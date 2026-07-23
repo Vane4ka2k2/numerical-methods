@@ -29,12 +29,12 @@
 
 ## 🛠 Сборка
 
-`ash
+```bash
 git clone https://github.com/Vane4ka2k2/numerical-methods.git
 cd numerical-methods
 cmake -B build
 cmake --build build
-`
+```
 
 ---
 
